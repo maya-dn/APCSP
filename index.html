@@ -1,0 +1,114 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>To-Do List Tracker</title>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 20px; }
+        h1 { text-align: center; }
+        input[type="text"] { padding: 8px; width: 70%; }
+        button { padding: 8px 16px; cursor: pointer; }
+        .task { padding: 8px; margin: 4px 0; display: flex; align-items: center; gap: 10px; border: 1px solid #ccc; border-radius: 4px; }
+        .task.done span { text-decoration: line-through; color: gray; }
+        .search-results { margin-top: 10px; padding: 10px; background: #f0f0f0; border-radius: 4px; }
+        #searchSection { margin-top: 20px; }
+    </style>
+</head>
+<body>
+    <h1>To-Do List Tracker</h1>
+
+    <!-- INPUT: user types a task name -->
+    <div>
+        <input type="text" id="taskInput" placeholder="Enter a task...">
+        <button onclick="addTask()">Add Task</button>
+    </div>
+
+    <!-- OUTPUT: displays all tasks -->
+    <h2>My Tasks</h2>
+    <div id="taskList"></div>
+
+    <!-- INPUT: user types a search keyword -->
+    <div id="searchSection">
+        <input type="text" id="searchInput" placeholder="Search tasks...">
+        <button onclick="searchTasks()">Search</button>
+        <div id="searchResults"></div>
+    </div>
+
+    <script>
+        // --- LIST (Collection Type) ---
+        // All tasks stored in an array of objects
+        var tasks = [];
+
+        // --- PROCEDURE WITH PARAMETER ---
+        // Takes taskName as a parameter and adds it to the list
+        function addTask(taskName) {
+            taskName = document.getElementById("taskInput").value.trim();
+            if (taskName === "") {
+                alert("Please enter a task name.");
+                return;
+            }
+            var newTask = { name: taskName, done: false };
+            tasks.push(newTask);
+            document.getElementById("taskInput").value = "";
+            showTasks();
+        }
+
+        // --- PROCEDURE WITH PARAMETER + ALGORITHM ---
+        // Uses sequencing, selection, and iteration
+        function findTasks(keyword) {
+            var results = [];                          // SEQUENCING
+            for (var i = 0; i < tasks.length; i++) {   // ITERATION
+                if (tasks[i].name.toLowerCase().includes(keyword.toLowerCase())) {  // SELECTION
+                    results.push(tasks[i]);
+                }
+            }
+            return results;
+        }
+
+        function completeTask(index) {
+            tasks[index].done = true;
+            showTasks();
+        }
+
+        // --- OUTPUT ---
+        function showTasks() {
+            var list = document.getElementById("taskList");
+            if (tasks.length === 0) {
+                list.innerHTML = "<p>No tasks yet. Add one above!</p>";
+                return;
+            }
+            var html = "";
+            for (var i = 0; i < tasks.length; i++) {
+                var doneClass = tasks[i].done ? "done" : "";
+                var btn = tasks[i].done ? "✔" : '<button onclick="completeTask(' + i + ')">Done</button>';
+                html += '<div class="task ' + doneClass + '">' + btn + " <span>" + tasks[i].name + "</span></div>";
+            }
+            list.innerHTML = html;
+        }
+
+        function searchTasks() {
+            var keyword = document.getElementById("searchInput").value.trim();
+            var resultsDiv = document.getElementById("searchResults");
+            if (keyword === "") {
+                resultsDiv.innerHTML = "";
+                return;
+            }
+            var matches = findTasks(keyword);
+            if (matches.length > 0) {
+                var html = '<div class="search-results"><strong>Found ' + matches.length + ' result(s) for "' + keyword + '":</strong><br>';
+                for (var i = 0; i < matches.length; i++) {
+                    var status = matches[i].done ? "✔" : "○";
+                    html += status + " " + matches[i].name + "<br>";
+                }
+                html += "</div>";
+                resultsDiv.innerHTML = html;
+            } else {
+                resultsDiv.innerHTML = '<div class="search-results">No tasks found matching "' + keyword + '".</div>';
+            }
+        }
+
+        showTasks();
+    </script>
+</body>
+</html>
