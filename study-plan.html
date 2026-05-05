@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AP CSP Exam Study Plan</title>
+  <script src="https://unpkg.com/react@18/umd/react.production.min.js"></script>
+  <script src="https://unpkg.com/react-dom@18/umd/react-dom.production.min.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+</head>
+<body>
+  <div id="root"></div>
+  <script type="text/babel">
+    const { useState } = React;
+
+    const DAYS = [
+      {
+        date: "May 5",
+        dow: "Monday",
+        label: "Day 1",
+        title: "Algorithms & Programming I",
+        tag: "30–35% of exam",
+        desc: "The single biggest topic on the exam. Get the pseudocode reference sheet burned into your brain.",
+        tasks: [
+          "Review the CSP Reference Sheet — know DISPLAY, REPEAT, IF/ELSE, PROCEDURE, and all list operations cold",
+          "AP Classroom → complete Big Idea 3 Topic Questions (algorithms, sequencing, selection, iteration)",
+          "Practice tracing code: work through 15–20 MCQs on loops, conditionals, and procedure calls",
+          "Make a personal cheat sheet of common patterns: swap, accumulator, min/max, linear search",
+        ],
+      },
+      {
+        date: "May 6",
+        dow: "Tuesday",
+        label: "Day 2",
+        title: "Algorithms & Programming II",
+        tag: "search, robots, debugging",
+        desc: "Go deeper on search algorithms, robot questions, and debugging — the stuff that separates 4s from 5s.",
+        tasks: [
+          "Study binary search vs. linear search — know when each applies and compare efficiency",
+          "Practice robot/grid movement questions (extremely common on the MCQ)",
+          "AP Classroom → timed set of 20 MCQs on procedures, parameters, and return values",
+          "Review how to identify and correct errors: logic errors, syntax errors, runtime errors, overflow",
+        ],
+      },
+      {
+        date: "May 7",
+        dow: "Wednesday",
+        label: "Day 3",
+        title: "Data Representation & Binary",
+        tag: "17–22% of exam",
+        desc: "Binary conversions show up every single year — don't lose free points here.",
+        tasks: [
+          "Master binary ↔ decimal conversions (do 10+ by hand until it's automatic)",
+          "Review data compression: lossy vs. lossless, overflow errors, round-off errors",
+          "Study storage fundamentals: bits, bytes, ASCII/Unicode, RGB pixel representation",
+          "AP Classroom → complete Big Idea 2 Topic Questions on data representation & analysis",
+        ],
+      },
+      {
+        date: "May 8",
+        dow: "Thursday",
+        label: "Day 4",
+        title: "Data Analysis + Lists",
+        tag: "filtering, transforming, patterns",
+        desc: "Connecting data concepts to code. Lists are essential for both MCQ and your Create Task written response.",
+        tasks: [
+          "Practice questions about extracting info from data: filtering, sorting, finding patterns in datasets",
+          "Review list operations in pseudocode: INSERT, APPEND, REMOVE, LENGTH, indexing",
+          "Study metadata, data cleaning, and the limitations of data-driven conclusions",
+          "Do 15 mixed MCQs across data + algorithm topics to reinforce connections",
+        ],
+      },
+      {
+        date: "May 9",
+        dow: "Friday",
+        label: "Day 5",
+        title: "The Internet & Computing Systems",
+        tag: "11–15% of exam",
+        desc: "Lighter weight but the questions are usually straightforward — easy points if you know the material.",
+        tasks: [
+          "Review how the internet works: packets, TCP/IP, DNS, HTTP/HTTPS, routing",
+          "Study fault tolerance, redundancy, and how the internet handles failures",
+          "Understand the difference between the internet and the World Wide Web",
+          "AP Classroom → complete Big Idea 4 Topic Questions on computing systems & networks",
+        ],
+      },
+      {
+        date: "May 10",
+        dow: "Saturday",
+        label: "Day 6",
+        title: "Impact of Computing",
+        tag: "21–26% of exam",
+        desc: "Second largest topic. These questions test concepts, not code. Read carefully.",
+        tasks: [
+          "Study digital divide, bias in algorithms, crowdsourcing, and citizen science",
+          "Review cybersecurity: PII, phishing, encryption (symmetric vs. public key), certificates",
+          "Know legal/ethical issues: Creative Commons, open-source, copyright, safe harbor",
+          "AP Classroom → complete Big Idea 5 Topic Questions on computing innovations & impact",
+        ],
+      },
+      {
+        date: "May 11",
+        dow: "Sunday",
+        label: "Day 7",
+        title: "Full Practice Exam (Timed)",
+        tag: "simulate real conditions",
+        desc: "The most important day of prep. 70 MCQs, 120 minutes, no distractions.",
+        tasks: [
+          "Take a full 70-question timed practice exam (120 min) — AP Classroom has one your teacher can release",
+          "Score yourself and identify your weakest Big Ideas",
+          "Review every question you got wrong — write down WHY you missed it",
+          "Make a targeted hit-list of concepts to revisit tomorrow",
+        ],
+      },
+      {
+        date: "May 12",
+        dow: "Monday",
+        label: "Day 8",
+        title: "Weak Spots + Written Response Prep",
+        tag: "target your gaps",
+        desc: "Patch your gaps from yesterday's exam and drill the written response — it's 30% of your final score.",
+        tasks: [
+          "Revisit your weak areas from the practice exam with focused topic review",
+          "Practice Written Response: review your PPR and answer sample prompts about your code",
+          "Know the 6 rubric rows: purpose/function, algorithm, abstraction, managing complexity, etc.",
+          "Write a timed practice response (~60 min) using your PPR screenshots",
+        ],
+      },
+      {
+        date: "May 13",
+        dow: "Tuesday",
+        label: "Day 9",
+        title: "Final Review + Exam Logistics",
+        tag: "night before",
+        desc: "Light review only — you're not learning new material, you're sharpening what you know.",
+        tasks: [
+          "Quick 20-question sprint across all Big Ideas to stay sharp",
+          "Re-read the CSP Reference Sheet one final time",
+          "Confirm Bluebook is installed and working — complete the digital practice if you haven't",
+          "Pack: charged laptop, student ID, water, snacks. Get to bed early.",
+        ],
+      },
+      {
+        date: "May 14",
+        dow: "Wednesday",
+        label: "EXAM DAY",
+        title: "AP CSP Exam — 12:00 PM",
+        tag: "you've got this",
+        desc: "This is it. Light review in the morning, arrive early, stay calm.",
+        tasks: [
+          "Light review only — skim your cheat sheets and the reference sheet over breakfast",
+          "Arrive early, stay calm, read every question carefully",
+          "Section I (MCQ): 70 questions, 120 min — flag tough ones and come back",
+          "Section II (Written Response): 2 questions about your Create Task, ~60 min",
+        ],
+      },
+    ];
+
+    const RESOURCES = [
+      { name: "AP Classroom", url: "https://apclassroom.collegeboard.org", note: "Official topic questions, progress checks, and full practice exams" },
+      { name: "CSP Reference Sheet (PDF)", url: "https://apcentral.collegeboard.org/media/pdf/ap-computer-science-principles-exam-reference-sheet.pdf", note: "The pseudocode reference you'll have on exam day" },
+      { name: "Past Exam Questions — AP Central", url: "https://apcentral.collegeboard.org/courses/ap-computer-science-principles/exam/past-exam-questions", note: "Released MCQs + written response samples with scoring rubrics" },
+      { name: "Khan Academy — AP CSP", url: "https://www.khanacademy.org/computing/ap-computer-science-principles", note: "Free videos and exercises for every unit" },
+      { name: "APCSExamPrep.com", url: "https://www.apcsexamprep.com", note: "Free 70-question practice exams and Big Idea study guides" },
+      { name: "Bluebook", url: "https://bluebook.collegeboard.org", note: "Install this and do the digital practice before exam day" },
+    ];
+
+    function StudyPlan() {
+      const [checked, setChecked] = useState({});
+      const [openDays, setOpenDays] = useState({ 0: true });
+
+      const toggle = (d, t) => {
+        const k = `${d}-${t}`;
+        setChecked(p => ({ ...p, [k]: !p[k] }));
+      };
+      const toggleDay = (d) => setOpenDays(p => ({ ...p, [d]: !p[d] }));
+
+      const total = DAYS.reduce((s, d) => s + d.tasks.length, 0);
+      const done = Object.values(checked).filter(Boolean).length;
+      const pct = Math.round((done / total) * 100);
+
+      return (
+        <div style={{
+          fontFamily: "Georgia, 'Times New Roman', serif",
+          background: "#fff",
+          color: "#1a1a1a",
+          minHeight: "100vh",
+          padding: "32px 20px 64px",
+          lineHeight: 1.7,
+        }}>
+          <style>{`
+            @import url('https://fonts.googleapis.com/css2?family=Source+Serif+4:wght@400;600;700&family=Source+Code+Pro:wght@400;500&display=swap');
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+            a { color: #1a6dd4; }
+            a:hover { color: #0f4d96; }
+          `}</style>
+
+          <div style={{ maxWidth: 640, margin: "0 auto" }}>
+
+            <h1 style={{
+              fontFamily: "'Source Serif 4', Georgia, serif",
+              fontSize: 30, fontWeight: 700, lineHeight: 1.25,
+              marginBottom: 6, color: "#111",
+            }}>
+              AP CSP Exam Study Plan
+            </h1>
+            <p style={{
+              fontSize: 15, color: "#666", marginBottom: 24,
+              fontFamily: "'Source Serif 4', Georgia, serif",
+            }}>
+              May 5 – May 14, 2026 · 10 days · Exam is Thursday 5/14 at 12 PM
+            </p>
+
+            <hr style={{ border: "none", borderTop: "1px solid #e5e5e5", marginBottom: 24 }} />
+
+            <p style={{ fontSize: 15, marginBottom: 10, fontFamily: "'Source Serif 4', Georgia, serif" }}>
+              The exam has two parts: <strong>Section I</strong> is 70 multiple-choice questions in 120 minutes (70% of your score),
+              and <strong>Section II</strong> is 2 written response questions about your Create Performance Task in ~60 minutes (30% of your score).
+              The whole thing is digital in Bluebook.
+            </p>
+            <p style={{ fontSize: 15, marginBottom: 24, fontFamily: "'Source Serif 4', Georgia, serif", color: "#555" }}>
+              Check off tasks as you go. Tap a day to expand it.
+            </p>
+
+            {/* Past Results */}
+            <div style={{
+              background: "#f8f9fa", border: "1px solid #e5e5e5", borderRadius: 6,
+              padding: "16px 20px", marginBottom: 28,
+            }}>
+              <h3 style={{
+                fontSize: 13, fontWeight: 600, textTransform: "uppercase",
+                letterSpacing: "0.5px", color: "#888", marginBottom: 12,
+                fontFamily: "'Source Code Pro', monospace",
+              }}>
+                Past Results
+              </h3>
+
+              <div style={{ display: "flex", justifyContent: "space-between", alignItems: "center" }}>
+                <div>
+                  <div style={{ fontSize: 16, fontWeight: 600, color: "#1a1a1a", fontFamily: "'Source Serif 4', Georgia, serif" }}>
+                    2021 Practice Exam MCQ
+                  </div>
+                  <div style={{ fontSize: 13, color: "#888", marginTop: 2 }}>
+                    AP Classroom · Completed Tue, Apr 21
+                  </div>
+                </div>
+                <div style={{ textAlign: "right" }}>
+                  <div style={{
+                    fontSize: 28, fontWeight: 700, color: "#1a1a1a",
+                    fontFamily: "'Source Code Pro', monospace",
+                    lineHeight: 1,
+                  }}>
+                    56<span style={{ color: "#aaa", fontWeight: 400, fontSize: 18 }}>/70</span>
+                  </div>
+                  <div style={{
+                    fontSize: 13, color: "#666", marginTop: 2,
+                    fontFamily: "'Source Code Pro', monospace",
+                  }}>80%</div>
+                </div>
+              </div>
+
+              <div style={{ marginTop: 12 }}>
+                <div style={{ height: 6, background: "#e0e0e0", borderRadius: 3, overflow: "hidden" }}>
+                  <div style={{
+                    height: "100%", width: "80%",
+                    background: "#4caf50",
+                    borderRadius: 3,
+                  }} />
+                </div>
+                <div style={{
+                  display: "flex", justifyContent: "space-between",
+                  fontSize: 11, color: "#aaa", marginTop: 4,
+                  fontFamily: "'Source Code Pro', monospace",
+                }}>
+                  <span>14 missed — review these topics during the plan</span>
+                  <span>goal: 63+ (90%)</span>
+                </div>
+              </div>
+            </div>
+
+            {/* Overall progress */}
+            <div style={{
+              background: "#f8f9fa", border: "1px solid #e5e5e5", borderRadius: 6,
+              padding: "12px 16px", marginBottom: 28,
+            }}>
+              <div style={{
+                display: "flex", justifyContent: "space-between", fontSize: 13, color: "#888", marginBottom: 6,
+                fontFamily: "'Source Code Pro', monospace",
+              }}>
+                <span>study plan progress</span>
+                <span>{done}/{total} tasks · {pct}%</span>
+              </div>
+              <div style={{ height: 6, background: "#e0e0e0", borderRadius: 3, overflow: "hidden" }}>
+                <div style={{
+                  height: "100%", width: `${pct}%`,
+                  background: pct === 100 ? "#4caf50" : "#1a6dd4",
+                  borderRadius: 3, transition: "width 0.3s ease",
+                }} />
+              </div>
+            </div>
+
+            {/* Days */}
+            {DAYS.map((day, di) => {
+              const isOpen = openDays[di];
+              const dayDone = day.tasks.filter((_, ti) => checked[`${di}-${ti}`]).length;
+              const dayTotal = day.tasks.length;
+              const allDone = dayDone === dayTotal;
+              const isExam = di === 9;
+
+              return (
+                <div key={di} style={{
+                  borderBottom: "1px solid #eee",
+                  paddingBottom: isOpen ? 16 : 0,
+                  marginBottom: isOpen ? 16 : 0,
+                }}>
+                  <button
+                    onClick={() => toggleDay(di)}
+                    style={{
+                      width: "100%", padding: "12px 0",
+                      display: "flex", alignItems: "baseline", gap: 12,
+                      background: "transparent", border: "none", color: "#1a1a1a",
+                      cursor: "pointer", textAlign: "left",
+                      fontFamily: "'Source Serif 4', Georgia, serif",
+                    }}
+                  >
+                    <span style={{
+                      fontSize: 12, color: isOpen ? "#1a6dd4" : "#aaa",
+                      fontFamily: "'Source Code Pro', monospace",
+                      fontWeight: 500, flexShrink: 0, width: 40,
+                      transition: "color 0.15s",
+                    }}>
+                      {isOpen ? "▾" : "▸"} {di + 1}.
+                    </span>
+
+                    <div style={{ flex: 1 }}>
+                      <span style={{
+                        fontSize: 17, fontWeight: 600, color: isExam ? "#c62828" : "#1a1a1a",
+                      }}>
+                        {day.title}
+                      </span>
+                      {allDone && <span style={{ fontSize: 13, color: "#4caf50", marginLeft: 8 }}>✓</span>}
+                      <div style={{
+                        fontSize: 13, color: "#999", marginTop: 1,
+                        fontFamily: "'Source Code Pro', monospace",
+                      }}>
+                        {day.dow}, {day.date} · {day.tag} · {dayDone}/{dayTotal}
+                      </div>
+                    </div>
+                  </button>
+
+                  {isOpen && (
+                    <div style={{ paddingLeft: 52 }}>
+                      <p style={{
+                        fontSize: 14, color: "#666", marginBottom: 12,
+                        fontFamily: "'Source Serif 4', Georgia, serif",
+                        fontStyle: "italic",
+                      }}>
+                        {day.desc}
+                      </p>
+                      {day.tasks.map((task, ti) => {
+                        const isDone = checked[`${di}-${ti}`];
+                        return (
+                          <label key={ti} style={{
+                            display: "flex", gap: 10, padding: "4px 0",
+                            cursor: "pointer", alignItems: "flex-start",
+                          }}>
+                            <input
+                              type="checkbox"
+                              checked={!!isDone}
+                              onChange={() => toggle(di, ti)}
+                              style={{
+                                width: 15, height: 15, marginTop: 4, flexShrink: 0,
+                                accentColor: "#1a6dd4",
+                              }}
+                            />
+                            <span style={{
+                              fontSize: 14,
+                              color: isDone ? "#bbb" : "#333",
+                              textDecoration: isDone ? "line-through" : "none",
+                              fontFamily: "'Source Serif 4', Georgia, serif",
+                              transition: "color 0.15s",
+                            }}>
+                              {task}
+                            </span>
+                          </label>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              );
+            })}
+
+            <hr style={{ border: "none", borderTop: "1px solid #e5e5e5", margin: "28px 0" }} />
+
+            {/* Resources */}
+            <h2 style={{
+              fontSize: 20, fontWeight: 700, marginBottom: 12,
+              fontFamily: "'Source Serif 4', Georgia, serif",
+            }}>
+              Resources
+            </h2>
+            {RESOURCES.map((r, i) => (
+              <div key={i} style={{ marginBottom: 10 }}>
+                <a href={r.url} target="_blank" rel="noopener noreferrer" style={{
+                  fontSize: 15, fontWeight: 600,
+                  fontFamily: "'Source Serif 4', Georgia, serif",
+                }}>{r.name}</a>
+                <span style={{ fontSize: 14, color: "#888", marginLeft: 8 }}>— {r.note}</span>
+              </div>
+            ))}
+
+            <hr style={{ border: "none", borderTop: "1px solid #e5e5e5", margin: "28px 0" }} />
+
+            {/* Exam tips */}
+            <h2 style={{
+              fontSize: 20, fontWeight: 700, marginBottom: 12,
+              fontFamily: "'Source Serif 4', Georgia, serif",
+            }}>
+              Exam Day Reminders
+            </h2>
+            <div style={{
+              fontSize: 15, color: "#333", lineHeight: 1.8,
+              fontFamily: "'Source Serif 4', Georgia, serif",
+            }}>
+              <p>Section I is 70 MCQs in 120 minutes — about 1 minute 42 seconds each. Flag the hard ones and come back. Section II gives you about 60 minutes for 2 written response questions about your Create Task, using only your Personalized Project Reference (not your full code).</p>
+              <p style={{ marginTop: 10 }}>There's no penalty for guessing, so never leave a question blank. Multi-select questions are marked and ask for two correct answers. The exam is fully digital in Bluebook — make sure it's installed and tested beforehand.</p>
+            </div>
+
+            <p style={{
+              fontSize: 13, color: "#ccc", marginTop: 40, textAlign: "center",
+              fontFamily: "'Source Code Pro', monospace",
+            }}>
+              last updated may 5, 2026
+            </p>
+          </div>
+        </div>
+      );
+    }
+
+    const root = ReactDOM.createRoot(document.getElementById("root"));
+    root.render(<StudyPlan />);
+  </script>
+</body>
+</html>
